@@ -3,8 +3,56 @@ function expressionCalculator(expr) {
 
   expr = expr.replace(/\s/g, '')
   //console.log('no spaces', expr)
-
   //console.log('expression', expr)
+
+  const rBrackets = /\(|\)/gm
+
+  const findBrackets = expr.match(rBrackets)
+
+  // console.log('findBrackets', findBrackets)
+
+  // if there are brackets
+  if (findBrackets) {
+    // console.log('watch out the brackets!')
+    const stack = []
+
+    const bracketsPair = { ')': '(' }
+
+    // check for odd num
+    if (findBrackets.length % 2 !== 0) throw ("ExpressionError: Brackets must be paired")
+
+    // check for missing pair if even number
+    else {
+
+      stack.push(findBrackets[0])
+
+      for (let i = 1; i < findBrackets.length; i++) {
+        console.log('str index', i)
+        let currentChar = findBrackets[i]
+        console.log('currentChar', currentChar)
+        let topStackEl = stack[stack.length - 1]
+        console.log('top stack el', topStackEl)
+        if (stack.length !== 0) {
+          if (bracketsPair[currentChar] === topStackEl) {
+            console.log('stack pop ->', currentChar)
+            stack.pop()
+          }
+          else {
+            console.log('stack push <-')
+            stack.push(currentChar)
+          }
+        }
+        else {
+          console.log('stack push <-')
+          stack.push(currentChar)
+        }
+        console.log('stack', stack)
+      }
+
+      if (stack.length !== 0) throw ("ExpressionError: Brackets must be paired")
+
+    }
+  }
 
   const operStack = []
 
@@ -17,6 +65,7 @@ function expressionCalculator(expr) {
     1: ['*', '/'],
     2: ['+', '-'],
   }
+
 
 
   for (let i of exprArr) {
@@ -82,7 +131,7 @@ function expressionCalculator(expr) {
     exitArr.push(elem)
   }
 
-  //console.log('exit array', exitArr)
+  console.log('exit array', exitArr)
   // do math operations
 
   let calcArr = []
@@ -159,12 +208,17 @@ function expressionCalculator(expr) {
     }
   }
 
-  return calcArr
+  return calcArr[0]
 }
 
+
 // //console.log(expressionCalculator('4 / 2'))
-// //console.log(expressionCalculator('88 - 72 + 55 * 57'))
-console.log(expressionCalculator('4 - 2 + 5 * 6'))
+// console.log(expressionCalculator('88 - 72 + 55 * 57'))
+// console.log(expressionCalculator('4 - 2 + 5 * 6'))
+// console.log(expressionCalculator('((1+2)*3)'))
+console.log(expressionCalculator('((1+2)*3)'))
+
+
 
 // //console.log(expressionCalculator('2 * 5'))
 
@@ -172,45 +226,3 @@ console.log(expressionCalculator('4 - 2 + 5 * 6'))
 // //console.log(expressionCalculator('5 * 2 + 10'))
 
 
-
-//   Easy
-// expression 2 + 2
-//     1) Test simple addition
-// expression 2-2
-//     2) Test simple subtraction
-// expression 2*3
-//     3) Test simple multiplication
-// expression 1/2
-//     4) Test simple division
-// expression 1 / 0
-//     5) Test division by zero
-// expression  49 * 63 / 58 * 36
-//     6) Mixed base test 1
-// expression  84 + 62 / 33 * 10 + 15
-//     7) Mixed base test 2
-// expression  48 + 59 * 86 * 92 * 23
-//     8) Mixed base test 3
-// expression  16 + 25 - 92 + 54 / 66
-//     9) Mixed base test 4
-// expression  64 + 19 - 77 - 93
-//     10) Mixed base test 5
-// expression  88 - 72 + 55 * 57
-//     11) Mixed base test 6
-// expression  99 * 55 / 30 + 50
-//     12) Mixed base test 7
-// expression  11 - 88 + 84 - 48
-//     13) Mixed base test 8
-// expression  68 * 60 / 87 / 53 + 17
-//     14) Mixed base test 9
-// expression  63 - 69 - 46 + 57
-//     15) Mixed base test 10
-// expression  60 + 29 / 57 - 85
-//     16) Mixed base test 11
-// expression  34 * 18 * 55 - 50
-//     17) Mixed base test 12
-// expression  12 * 3 - 18 + 34 - 84
-//     18) Mixed base test 13
-// expression  70 / 42 - 52 - 64 / 35
-//     19) Mixed base test 14
-// expression  39 / 41 + 100 + 45
-//     20) Mixed base test 15
