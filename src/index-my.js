@@ -15,15 +15,140 @@ function expressionCalculator(expr) {
   }
 
 
-  for (let i of expr) {
-    console.log(i)
+  for (let i of exprArr) {
+
+    // check if elem is number -> push to exit arr
+    if (!isNaN(i)) {
+      console.log(`${i} is Number! -> push to exit arr`)
+      exitArr.push(i)
+      console.log('exitArr', exitArr)
+    }
+    // this is operand -> need to push to oper stack or exit arr
+    else {
+      // if operaation stack is empty -> push operation arr
+      console.log(`${i} isNaN!`)
+      if (operStack.length === 0) {
+        console.log(`operStack empty! <- push ${i}`)
+        operStack.push(i)
+        console.log('operStack', operStack)
+      }
+      // if not empty -> check priority using operPriority dictionary
+      else {
+
+        console.log('operStack not empty!')
+        let operStackLast = operStack[operStack.length - 1]
+        console.log('last value in operStack', operStack[operStack.length - 1])
+        // check priority of current i element
+
+        let elemPriorityOne = operPriority[1].includes(i) // true || false
+        console.log(` elemPriorityOne ${elemPriorityOne}`)
+
+        // check priority of last element in stack
+        let lastStackElPriorityOne = operPriority[1].includes(operStackLast) // true || false
+        console.log(` lastStackElPriorityOne ${lastStackElPriorityOne}`)
+
+        // equal case
+        // if both true or both false -> current element is of equal priority to last elem in stack -> pop() last elem from stack and push() to exit array and push() there current elem
+        if (elemPriorityOne && lastStackElPriorityOne || !elemPriorityOne && !lastStackElPriorityOne) {
+          exitArr.push(operStack.pop(operStackLast))
+          console.log('operStack.pop()', operStack, 'exitArr', exitArr)
+          operStack.push(i)
+          console.log('operStack if1', operStack)
+
+        }
+        // last value in stack has higher priority && elem to add lower
+        // if last elem in stack has higher priority -> then pop() and push() it to exit array -> push() there current elem
+        else if (lastStackElPriorityOne && !elemPriorityOne) {
+          exitArr.push(operStack.pop(operStackLast))
+          console.log('operStack.pop()', operStack, 'exitArr', exitArr)
+          operStack.push(i)
+          console.log('operStack if2', operStack)
+
+        }
+        else {
+          operStack.push(i)
+          console.log('operStack else', operStack)
+        }
+      }
+    }
   }
 
-  return true
+  // push everything from stackOper -> exit array
+  for (let elem of operStack.reverse()) {
+    exitArr.push(elem)
+  }
+
+  console.log('exit array', exitArr)
+  // do math operations
+
+  let calcArr = []
+  let result
+
+  for (let elem of exitArr) {
+
+    let lastTwo
+
+    calcArr.length >= 2 ? lastTwo = calcArr.slice(-2) :
+
+      console.log('elem', elem)
+
+    let elemInt = parseInt(elem)
+
+    console.log('elem of exitArr', elemInt)
+    console.log('calcArr', calcArr)
+
+    if (!isNaN(elemInt)) {
+      console.log('number!')
+      calcArr.push(elemInt)
+      console.log('calcArr', calcArr)
+    }
+    if (isNaN(elemInt)) {
+      console.log('math operation!')
+      switch (elem) {
+        case '*':
+          result = lastTwo.reduce((acc, el) => acc * el, 1)
+          console.log('result *', result)
+          for (let i = 0; i < 2; i++) {
+            calcArr.pop()
+            console.log('pop()', calcArr)
+          }
+          calcArr.push(result)
+          console.log('calcArr.push(result)', calcArr)
+          break
+        case '+':
+          result = lastTwo.reduce((acc, el) => acc + el, 0)
+          for (let i = 0; i < 2; i++) {
+            calcArr.pop()
+            console.log('pop()', calcArr)
+          }
+          calcArr.push(result)
+          console.log('calcArr.push(result)', calcArr)
+          break
+        case '/':
+          result = Math.floor(lastTwo[0] / lastTwo[1])
+          for (let i = 0; i < 2; i++) {
+            calcArr.pop()
+            console.log('pop()', calcArr)
+          }
+          calcArr.push(result)
+          console.log('calcArr.push(result)', calcArr)
+          break
+      }
+
+    }
+  }
+
+  return calcArr
 
 }
 
-console.log(expressionCalculator('2 + 2'))
+console.log(expressionCalculator('3 / 3 + 3 / 3 + 2 * 10 + 54 / 65'))
+// console.log(expressionCalculator('2 * 5'))
+
+// console.log(expressionCalculator('49 * 63 / 58 * 36'))
+// console.log(expressionCalculator('5 * 2 + 10'))
+
+
 
 //   Easy
 // expression 2 + 2
